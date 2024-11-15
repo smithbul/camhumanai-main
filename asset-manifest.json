@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/camhumanai-main/static/css/main.daa22289.css",
+    "main.js": "/camhumanai-main/static/js/main.6a5996e6.js",
+    "static/js/453.8ab44547.chunk.js": "/camhumanai-main/static/js/453.8ab44547.chunk.js",
+    "index.html": "/camhumanai-main/index.html",
+    "main.daa22289.css.map": "/camhumanai-main/static/css/main.daa22289.css.map",
+    "main.6a5996e6.js.map": "/camhumanai-main/static/js/main.6a5996e6.js.map",
+    "453.8ab44547.chunk.js.map": "/camhumanai-main/static/js/453.8ab44547.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.daa22289.css",
+    "static/js/main.6a5996e6.js"
+  ]
+}
