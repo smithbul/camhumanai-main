@@ -99,18 +99,6 @@ function App() {
     }
   };
 
-  // const embedChart = (data) => {
-  //   const spec = {
-  //     $schema: 'https://vega.github.io/schema/vega-lite/v5.json',
-  //     data: { values: data },
-  //     mark: 'bar',
-  //     encoding: {
-  //       x: { field: Object.keys(data[0])[0], type: 'ordinal' },
-  //       y: { field: Object.keys(data[0])[1], type: 'quantitative' }
-  //     }
-  //   };
-  //   setVegaSpec(spec);
-  // };
 
   const embedChart = (parsedData) => {
     try {
