@@ -14,17 +14,52 @@
   text-align: center;
 }
 
+/* Spinner container */
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid rgba(0, 0, 0, 0.1); /* Light border */
+  border-top-color: #3498db; /* Blue top border */
+  border-radius: 50%; /* Circle shape */
+  animation: spin 1s linear infinite; /* Infinite spin */
+  margin: auto;
+}
+
+/* Keyframes for spinner animation */
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+
 form {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
+  justify-content: center;
   margin-bottom: 20px;
+}
+
+form input[type="text"] {
+  margin-right: 10px;
+}
+
+form button {
+  margin-right: 10px;
+  
+}
+
+.clear-messages-button {
+  margin-left: 10px;
 }
 
 .table-container {
   overflow-x: auto;
 }
-
 
 .message-history {
   max-height: 300px;

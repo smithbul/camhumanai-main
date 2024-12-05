@@ -1,0 +1,19 @@
+{
+  "name": "generateVegaSpec",
+  "description": "Generate a Vega specification based on a user question. Call this whenever you need to generate a chart based on user input.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "question": {
+        "type": "string",
+        "description": "The user's question or prompt for generating the chart."
+      },
+      "dataUrl": {
+        "type": "string",
+        "description": "The URL of the data to be used for generating the chart."
+      }
+    },
+    "required": ["question"],
+    "additionalProperties": false
+  }
+}

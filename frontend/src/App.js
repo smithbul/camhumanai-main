@@ -4,6 +4,10 @@ import './App.css';
 import * as d3 from 'd3-dsv';
 import { VegaLite } from 'react-vega';
 
+
+
+
+
 function App() {
   const [prompt, setPrompt] = useState('');
   const [messages, setMessages] = useState([]);
@@ -12,15 +16,26 @@ function App() {
   const [vegaSpec, setVegaSpec] = useState(null);
   const [csvFile, setCsvFile] = useState(null); // Add state for CSV file
   const chartRef = useRef(null);
+  const [description, setDescription] = useState('');
+  const handleClearMessages = () => {
+    setMessages([]);
+  };
+  const [loading, setLoading] = useState(false);
 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const res = await axios.post('http://localhost:8001/query', { prompt });
       const parsedData = res.data;
   
+
       console.log('Response data:', parsedData); // Log the response to confirm structure
+
+          // Parse the response string into a JSON object
+
+
   
       // Add the user's prompt and the backend's response to the messages
       setMessages([...messages, { prompt, response: parsedData.response }]);
@@ -31,10 +46,23 @@ function App() {
       if (parsedData.response) {
         try {
           vegaSpec = JSON.parse(parsedData.response); // Parse the JSON string in "response"
-        } catch (error) {
-          console.error('Failed to parse Vega-Lite spec from response', error);
-          return;
-        }
+          //let responseObject;
+          //try {
+          //  responseObject = JSON.parse(parsedData.response);
+          //} catch (error) {
+          //  console.error('Failed to parse response string', error);
+          //  setError('Failed to parse response from server');
+          //  setLoading(false);
+          //  return;
+          //}
+
+          //const description = responseObject.description;
+          //console.log('Description:',description);
+          //vegaSpec = description
+          } catch (error) {
+            console.error('Failed to parse Vega-Lite spec from response', error);
+            return;
+          }
       } else {
         vegaSpec = parsedData; // Use parsedData directly if it's already the Vega spec
       }
@@ -42,11 +70,18 @@ function App() {
       // Set the Vega-Lite spec
       if (vegaSpec.$schema && vegaSpec.data && (vegaSpec.mark || vegaSpec.layer || vegaSpec.facet || vegaSpec.hconcat || vegaSpec.vconcat || vegaSpec.concat || vegaSpec.repeat)) {
         setVegaSpec(vegaSpec);
+        
       } else {
         console.error('Invalid Vega-Lite specification received from the backend.');
       }
+
+
+      //setPrompt('');
+
     } catch (error) {
       console.error('Error querying the backend:', error);
+    } finally {
+      setLoading(false);
     }
   };
   
@@ -113,11 +148,22 @@ function App() {
       console.error('Error setting up Vega-Lite spec', error);
     }
   };
+
+
   
 
   return (
     <div className="App" onDragOver={handleDragOver} onDrop={handleDrop}>
       <header className="App-header">
+      {loading && <div className="loading-spinner"></div>}
+      <div className="message-history">
+          {messages.map((msg, index) => (
+            <div key={index} className="message">
+              <div className="prompt">{msg.prompt}</div>
+              <div className="response">{msg.response}</div>
+            </div>
+          ))}
+        </div>
         <form onSubmit={handleSubmit}>
           <input
             type="text"
@@ -133,14 +179,12 @@ function App() {
           onChange={(e) => handleFileChange(e.target.files[0])}
         />
         {error && <div className="error">{error}</div>}
-        <div className="message-history">
-          {messages.map((msg, index) => (
-            <div key={index} className="message">
-              <div className="prompt">{msg.prompt}</div>
-              <div className="response">{msg.response}</div>
-            </div>
-          ))}
-        </div>
+        <button className="clear-messages-button" onClick={handleClearMessages}>Clear Messages</button>
+        {vegaSpec && (
+           <div className="chart-container">
+          <VegaLite spec={vegaSpec} />
+          </div>
+        )}
         {tableData && (
           <div className="table-container">
             <table>
@@ -163,11 +207,7 @@ function App() {
             </table>
           </div>
         )}
-        {vegaSpec && (
-           <div className="chart-container">
-          <VegaLite spec={vegaSpec} />
-          </div>
-        )}
+
       </header>
     </div>
   );

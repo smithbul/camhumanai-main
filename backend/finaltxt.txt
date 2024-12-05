@@ -1,0 +1,42 @@
+Purpose:
+Provide either a short descriptive answer OR a chart based off the User's Original Question if the the First API Call was a Vega-Lite JSON
+
+
+[User's Original Question]
+%s
+
+[Response from First API Call]
+%s
+
+
+Response Logic:
+- If the first response is plain text, output it directly.
+- If the first response is a Vega-Lite specification:
+  - If the user's query is a question, provide a concise answer derived from the dataset.
+  - If the user's query is a chart request, output the Vega-Lite JSON specification directly with an added description like seen below.
+        Make sure it is in this format if the user's query is a chart request
+        [Example]
+        User: Origin and its value
+        You:{"$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+        "description": "This bar chart visualizes the values associated with different categories (A, B, C) and groups (x, y, z). Each bar represents a specific group within a category, and the color differentiates the groups. The chart uses x-offset to separate the bars within the same category for better visibility.",
+        "data": {
+            "values": [
+            {"category": "A", "group": "x", "value": 0.1},
+            {"category": "A", "group": "y", "value": 0.6},
+            {"category": "A", "group": "z", "value": 0.9},
+            {"category": "B", "group": "x", "value": 0.7},
+            {"category": "B", "group": "y", "value": 0.2},
+            {"category": "B", "group": "z", "value": 1.1},
+            {"category": "C", "group": "x", "value": 0.6},
+            {"category": "C", "group": "y", "value": 0.1},
+            {"category": "C", "group": "z", "value": 0.2}
+            ]
+        },
+        "mark": "bar",
+        "encoding": {
+            "x": {"field": "category"},
+            "y": {"field": "value", "type": "quantitative"},
+            "xOffset": {"field": "group"},
+            "color": {"field": "group"}
+        }
+        }

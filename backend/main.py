@@ -115,16 +115,14 @@ async def query_openai(request: QueryRequest):
         col_types = {col: str(dtype) for col, dtype in dataframe.dtypes.items()}
         sample_records = dataframe.iloc[:10].to_dict(orient="records")
 
-        # Read and format prompt
+        # Read and format the initial prompt
         with open("prompt.txt", "r") as file:
             template = file.read()
         prompt = template % (col_names, col_types, sample_records)
 
-        try:
-            # Set your OpenAI API key
-            
 
-            # Call the OpenAI API via LangChain
+        try:
+            # Call OpenAI API for the first request
             chat_completion = client.chat.completions.create(
                 messages=[
                     {
@@ -139,9 +137,37 @@ async def query_openai(request: QueryRequest):
                 model="gpt-3.5-turbo",
             )
 
-            return QueryResponse(response=chat_completion.choices[0].message.content)
+            # Extract the first response content
+            first_response_content = chat_completion.choices[0].message.content
+            print(f"First response: {first_response_content}")
+
+            # Read and format final text
+            with open("finaltxt.txt", "r") as file:
+                final_template = file.read()
+
+            # Replace placeholders with actual values
+            final = final_template % (request.prompt, first_response_content)
+
+
+            # Call OpenAI API for the second request
+            chat_completion_1 = client.chat.completions.create(
+                messages=[
+                    {
+                        "role": "user",
+                        "content": final,  # Append the final text as user input
+                    }
+
+
+                ],
+                model="gpt-3.5-turbo",
+            )
+            print(f"Last response: {chat_completion_1.choices[0].message.content}")
+            # Return the response from the second request
+            return QueryResponse(response=chat_completion_1.choices[0].message.content)
+
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))
+
     else:
         try:
             print("false")
